@@ -14,6 +14,9 @@ const openai = new OpenAI({
 app.get("/", (req, res) => {
   res.send("✅ Backend is running");
 });
+app.use(cors({
+  origin: "*"
+}));
 app.post("/chat", async (req, res) => {
   try {
     const { messages } = req.body;
