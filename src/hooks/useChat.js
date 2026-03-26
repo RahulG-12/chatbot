@@ -50,7 +50,7 @@ export default function useChat() {
         .map((m) => `${m.role === "assistant" ? "Aria" : "User"}: ${m.content}`)
         .join("\n");
 
-      const res = await fetch("https://chatbot-mrr1.onrender.com/", {
+      const res = await fetch("https://chatbot-mrr1.onrender.com/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export default function useChat() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://chatbot-mrr1.onrender.com/", {
+      const res = await fetch("https://chatbot-mrr1.onrender.com/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
