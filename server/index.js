@@ -11,7 +11,9 @@ dotenv.config();
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
-
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running");
+});
 app.post("/chat", async (req, res) => {
   try {
     const { messages } = req.body;
