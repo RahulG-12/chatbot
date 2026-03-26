@@ -43,7 +43,7 @@ export default function useChat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  // Extract lead data (still using AI via backend later if needed)
+  // Extract lead data
   const extractLeadData = async (allMessages) => {
     try {
       const conversation = allMessages
@@ -71,6 +71,9 @@ export default function useChat() {
 
       const data = await res.json();
 
+      // ✅ FIXED: safe handling
+      if (!res.ok || !data.reply) return;
+
       let parsed = {};
       try {
         parsed = JSON.parse(data.reply);
@@ -87,7 +90,7 @@ export default function useChat() {
         requirement: parsed.requirement || prev.requirement,
       }));
     } catch {
-      // ignore silently
+      // silently ignore
     }
   };
 
@@ -123,6 +126,11 @@ export default function useChat() {
 
       const data = await res.json();
 
+      // ✅ FIXED: safe handling
+      if (!res.ok || !data.reply) {
+        throw new Error(data.error || "No reply from server");
+      }
+
       const finalMessages = [
         ...updatedMessages,
         { role: "assistant", content: data.reply },
@@ -130,9 +138,10 @@ export default function useChat() {
 
       setMessages(finalMessages);
 
-      if (data?.reply && data.reply.toLowerCase().includes("reach out")) {
-      setLeadCaptured(true);
+      if (data.reply.toLowerCase().includes("reach out")) {
+        setLeadCaptured(true);
       }
+
       extractLeadData(finalMessages);
     } catch (err) {
       console.error("OpenAI error:", err);
